@@ -34,8 +34,9 @@ const Users = ({ users, frequencies }: Props) => (
 
 export async function getServerSideProps(context) {
   if (context.req.method == "POST") {
-    const {username} = await parseBody(context.req, '1mb');
+    const {username, remove} = await parseBody(context.req, '1mb');
     username && await dependencies.userRepository.save({name:username})
+    remove && await dependencies.userRepository.remove(parseInt(remove))
   }
   const users = await dependencies.userRepository.list()
   const frequencies = await countFirstNames(dependencies.userRepository)

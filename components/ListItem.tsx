@@ -16,9 +16,15 @@ const ListItem = ({ data }: Props) => (
       </p>
   </div>
   <div className="md:px-2 mt-3 md:mt-0 items-center flex">
-  <Link href="/users/[id]" as={`/users/${data.id}`}>
-      <button className="bg-blue-500 text-white font-bold px-4 py-2 text-sm uppercase rounded tracking-wider focus:outline-none hover:bg-blue-600"> Show</button>
+    <Link href="/users/[id]" as={`/users/${data.id}`}>
+      <button className="bg-blue-400 text-white font-bold px-4 py-2 text-sm uppercase rounded tracking-wider focus:outline-none hover:bg-blue-600"> Show</button>
       </Link>
+  </div>
+  <div className="md:px-2 mt-3 md:mt-0 items-center flex">
+  <form method="post" action="/users">
+    <input hidden name="remove" defaultValue={data.id} />
+      <button type="submit" className="bg-red-400 text-white font-bold px-4 py-2 text-sm uppercase rounded tracking-wider focus:outline-none hover:bg-red-600"> Delete</button>
+      </form>
   </div>
 </div>
 )

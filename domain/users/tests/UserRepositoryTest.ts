@@ -15,6 +15,7 @@ export class UserRepositoryTest implements IUserRepository {
           { id: 105, name: 'Bob' },
         ];
   }
+
   async get(id: number) {
     return this._users.find((u) => u.id === id);
   }
@@ -32,5 +33,9 @@ export class UserRepositoryTest implements IUserRepository {
       this._users = [...this._users, { ...user, id: this._next_user_id }];
       this._next_user_id += 1;
     }
+  }
+
+  async remove(id: number) {
+    this._users = this._users.filter((user) => user.id !== id);
   }
 }
