@@ -1,14 +1,14 @@
-import { User } from '../../interfaces';
-import { sampleUserData } from '../../utils/sample-data';
+import { User } from '../../domain/users/entities/Users';
 import Layout from '../../components/Layout';
 import ListDetail from '../../components/ListDetail';
+import {dependencies } from '../../interface/depedencies' 
 
 type Props = {
-  item?: User;
+  user?: User;
   errors?: string;
 };
 
-const UserDetail = ({ item, errors }: Props) => {
+const UserDetail = ({ user, errors }: Props) => {
   if (errors) {
     return (
       <Layout title="Error | Next.js + TypeScript Example">
@@ -20,8 +20,8 @@ const UserDetail = ({ item, errors }: Props) => {
   }
 
   return (
-    <Layout title={`${item ? item.name : 'User Detail'} | Next.js + TypeScript Example`}>
-      {item && <ListDetail item={item} />}
+    <Layout title={`${user ? user.name : 'User Detail'} | Next.js + TypeScript Example`}>
+      {user && <ListDetail item={user} />}
     </Layout>
   );
 };
@@ -30,6 +30,6 @@ export default UserDetail;
 
 export async function getServerSideProps(context) {
   const id = context.params?.id;
-  const item = sampleUserData.find((data) => data.id === Number(id));
-  return item ? { props: { item } } : { notFound: true };
+  const user = id && await dependencies.userRepository.get(parseInt(id))
+  return user ? { props: { user } } : { notFound: true };
 }

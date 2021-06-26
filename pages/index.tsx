@@ -19,9 +19,9 @@ const IndexPage = () => (
       </button>
     </form>
 
-    <p>
+    <p className="mt-4">
       <Link href="/about">
-        <a>About</a>
+        <a className="text-gray-400">About ⏭</a>
       </Link>
     </p>
   </Layout>

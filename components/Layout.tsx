@@ -65,14 +65,6 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
                 <a className={getNavigationClassFromUrl('/users')}>Users</a>
               </Link>
             </li>
-            <li className="text-gray-300">
-              <MenuSeparator />
-            </li>
-            <li>
-              <a className={getNavigationClassFromUrl('/api/users')} href="/api/users">
-                Users API
-              </a>
-            </li>
           </ul>
         </nav>
       </header>

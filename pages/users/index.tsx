@@ -1,33 +1,38 @@
 import Link from 'next/link'
-
-import { User } from '../../interfaces'
-import { sampleUserData } from '../../utils/sample-data'
+import { User } from '../../domain/users/entities/Users'
 import Layout from '../../components/Layout'
 import List from '../../components/List'
+import {dependencies } from '../../interface/depedencies' 
+import { countFirstNames } from '../../domain/users/use-cases/countFirstNames'
 
 type Props = {
-  items: User[]
+  users: User[],
+  frequencies: Array<{name:string, occurences:number}>
 }
 
-const Users = ({ items }: Props) => (
+const Users = ({ users, frequencies }: Props) => (
   <Layout title="Users List | Next.js + TypeScript Example">
-    <h1>Users List</h1>
+    <h1 className="text-2xl mb-4 font-bold" >Users List</h1>
     <p>
-      Example fetching data from inside <code>getStaticProps()</code>.
+      Example fetching data from inside <code>getServerSideProps()</code>.
     </p>
     <p>You are currently on: /users</p>
-    <List items={items} />
-    <p>
+    <List items={users} />
+    <p className="mt-4">
+      {frequencies.length ? frequencies.map(f => `${f.occurences} ${f.name}${f.occurences>1 ? 's' : ''}`).join(', ') : "No one here..."}
+    </p>
+    <p className="mt-4">
       <Link href="/">
-        <a>Go home</a>
+        <a className="text-gray-400">Go home ⏭</a>
       </Link>
     </p>
   </Layout>
 )
 
 export async function getServerSideProps(context) {
-  const items: User[] = sampleUserData
-  return { props: { items } }
+  const users = await dependencies.userRepository.list()
+  const frequencies = await countFirstNames(dependencies.userRepository)
+  return { props: { users, frequencies } }
 }
 
 export default Users
