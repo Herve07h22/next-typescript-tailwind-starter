@@ -1,7 +1,7 @@
 import { User } from '../../domain/users/entities/Users';
 import Layout from '../../components/Layout';
 import ListDetail from '../../components/ListDetail';
-import {dependencies } from '../../interface/depedencies' 
+import { dependencies } from '../../interface/depedencies';
 
 type Props = {
   user?: User;
@@ -30,6 +30,6 @@ export default UserDetail;
 
 export async function getServerSideProps(context) {
   const id = context.params?.id;
-  const user = id && await dependencies.userRepository.get(parseInt(id))
+  const user = id && (await dependencies.userRepository.get(parseInt(id)));
   return user ? { props: { user } } : { notFound: true };
 }

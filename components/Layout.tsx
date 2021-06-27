@@ -3,10 +3,12 @@ import Link from 'next/link';
 import Head from 'next/head';
 import 'tailwindcss/tailwind.css';
 import { useRouter } from 'next/router';
+import { User } from '../domain/users/entities/Users';
 
 type Props = {
   children?: ReactNode;
   title?: string;
+  user?: User;
 };
 
 const MenuSeparator = () => (
@@ -26,7 +28,7 @@ const MenuSeparator = () => (
   </svg>
 );
 
-const Layout = ({ children, title = 'This is the default title' }: Props) => {
+const Layout = ({ children, user, title = 'This is the default title' }: Props) => {
   const router = useRouter();
 
   const getNavigationClassFromUrl = (href: string) =>
@@ -43,7 +45,8 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
       </Head>
       <header>
         <nav className="relative px-4 py-8 flex justify-between items-center bg-white">
-          <ul className="hidden absolute top-1/2 left-1/2 transform -translate-y-1/2 -translate-x-1/2 lg:flex lg:mx-auto lg:flex lg:items-center lg:w-auto lg:space-x-6">
+          <div className="text-3xl px-4">🚀</div>
+          <ul className="flex items-center w-auto space-x-6">
             <li>
               <Link href="/">
                 <a className={getNavigationClassFromUrl('/')}>Home</a>
@@ -66,8 +69,25 @@ const Layout = ({ children, title = 'This is the default title' }: Props) => {
               </Link>
             </li>
           </ul>
+          {user && user.name ? (
+            <div className="text-sm text-gray-400 px-4 flex space-x-6 items-center">
+              <span>Logged as {user.name}</span>
+              <Link href="/logout">
+                <button className="bg-gray-400 text-white font-bold px-4 py-2 text-sm uppercase rounded tracking-wider focus:outline-none hover:bg-gray-600">
+                  Logout
+                </button>
+              </Link>
+            </div>
+          ) : (
+            <Link href="/login">
+              <button className="bg-blue-400 text-white font-bold px-4 py-2 text-sm uppercase rounded tracking-wider focus:outline-none hover:bg-blue-600">
+                Login
+              </button>
+            </Link>
+          )}
         </nav>
       </header>
+      {}
       <div className="flex-grow max-w-screen-lg self-center w-full px-4 py-4">{children}</div>
       <footer>
         <div className="max-w-screen-xl px-4 py-4 mx-auto space-y-8 overflow-hidden sm:px-6 lg:px-8">

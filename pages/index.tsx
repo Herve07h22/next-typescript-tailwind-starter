@@ -1,8 +1,9 @@
 import Link from 'next/link';
+import { withSession, getUserOrRedirect } from '../authentication/session';
 import Layout from '../components/Layout';
 
-const IndexPage = () => (
-  <Layout title="Home | Next.js + TypeScript Example">
+const IndexPage = ({ user }) => (
+  <Layout title="Home | Next.js + TypeScript Example" user={user}>
     <h1>Hello Next.js </h1>
 
     <form method="post" action="/about" className="m-4 flex">
@@ -26,5 +27,10 @@ const IndexPage = () => (
     </p>
   </Layout>
 );
+
+export const getServerSideProps = withSession(async (context) => {
+  const { user, redirect } = getUserOrRedirect(context);
+  return { props: { user } };
+});
 
 export default IndexPage;

@@ -19,6 +19,9 @@ export class UserRepositoryTest implements IUserRepository {
   async get(id: number) {
     return this._users.find((u) => u.id === id);
   }
+  async findByUsername(username: string, password: string) {
+    return this._users.find((u) => u.name === username && password === 'pwd');
+  }
   async list() {
     return this._users;
   }
