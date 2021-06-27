@@ -9,9 +9,10 @@ const Login = ({ errorMsg }) => {
   return (
     <Layout>
       <div className="flex flex-col items-center justify-center h-screen select-none">
-        <div className="flex flex-col -mt-32 bg-white px-4 sm:px-6 md:px-8 lg:px-10 py-8 rounded-xl shadow-2xl w-full max-w-md  border-l-4 border-purple-600">
+        <div className="flex flex-col -mt-32 bg-white px-4 sm:px-6 md:px-8 lg:px-10 py-8 rounded-xl shadow-2xl w-full max-w-md  border-l-4 border-blue-600">
           <div className="mt-10">
-            <form method="POST" action="" autoComplete="">
+            <form method="POST" action="">
+              {errorMsg && <p className="p-2 text-red-500">{errorMsg}</p>}
               <div className="relative w-full mb-3">
                 <input
                   type="text"
@@ -20,7 +21,6 @@ const Login = ({ errorMsg }) => {
                   placeholder="Username"
                   style={{ transition: 'all 0.15s ease 0s' }}
                 />
-                <small className="p-2 text-red-500">* Username</small>
               </div>
               <div className="relative w-full mb-3">
                 <input
@@ -30,7 +30,6 @@ const Login = ({ errorMsg }) => {
                   placeholder="Password"
                   style={{ transition: 'all 0.15s ease 0s' }}
                 />
-                <small className="p-2 text-red-500">* Password</small>
               </div>
               <div className="text-center mt-6">
                 <input

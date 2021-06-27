@@ -32,9 +32,7 @@ const Layout = ({ children, user, title = 'This is the default title' }: Props) 
   const router = useRouter();
 
   const getNavigationClassFromUrl = (href: string) =>
-    router.asPath === href
-      ? 'text-sm text-blue-600 font-bold'
-      : 'text-sm text-gray-400 hover:text-gray-500';
+    router.asPath === href ? 'text-blue-600 font-bold' : 'text-gray-400 hover:text-gray-500';
 
   return (
     <div className="flex flex-col h-screen border-black">
@@ -88,7 +86,7 @@ const Layout = ({ children, user, title = 'This is the default title' }: Props) 
         </nav>
       </header>
       {}
-      <div className="flex-grow max-w-screen-lg self-center w-full px-4 py-4">{children}</div>
+      <div className="flex-grow max-w-screen-xl self-center w-full px-4 py-4">{children}</div>
       <footer>
         <div className="max-w-screen-xl px-4 py-4 mx-auto space-y-8 overflow-hidden sm:px-6 lg:px-8">
           <div className="flex justify-center mt-4 space-x-6">
