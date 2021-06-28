@@ -1,14 +1,14 @@
 import Link from 'next/link';
+import { GetServerSideProps } from 'next';
+import { parseBody } from 'next/dist/next-server/server/api-utils';
+import { getUserOrRedirect, withSession, ContextWithSession } from '../../interface/session';
+
 import { User } from '../../domain/users/entities/Users';
 import Layout from '../../components/Layout';
 import List from '../../components/List';
 import AddItem from '../../components/AddItem';
 import { dependencies } from '../../interface/depedencies';
 import { countFirstNames } from '../../domain/users/use-cases/countFirstNames';
-import { NextApiRequestCookies, parseBody } from 'next/dist/next-server/server/api-utils';
-import { GetStaticProps, GetStaticPaths, GetServerSideProps, NextApiRequest } from 'next';
-import { IncomingMessage } from 'http';
-import { withSession, getUserOrRedirect } from '../../authentication/session';
 
 type Props = {
   users: User[];
@@ -40,18 +40,20 @@ const Users = ({ users, frequencies, user }: Props) => (
   </Layout>
 );
 
-export const getServerSideProps: GetServerSideProps = withSession(async (context) => {
-  const { user, redirect } = getUserOrRedirect(context);
-  if (redirect) return { redirect };
+export const getServerSideProps: GetServerSideProps = withSession(
+  async (context: ContextWithSession) => {
+    const { user, redirect } = getUserOrRedirect(context);
+    if (redirect) return { redirect };
 
-  if (context.req.method == 'POST') {
-    const { username, remove } = await parseBody(context.req, '1mb');
-    username && (await dependencies.userRepository.save({ name: username }));
-    remove && (await dependencies.userRepository.remove(parseInt(remove)));
+    if (context.req.method == 'POST') {
+      const { username, remove } = await parseBody(context.req, '1mb');
+      username && (await dependencies.userRepository.save({ name: username }));
+      remove && (await dependencies.userRepository.remove(parseInt(remove)));
+    }
+    const users = await dependencies.userRepository.list();
+    const frequencies = await countFirstNames(dependencies.userRepository);
+    return { props: { users, frequencies, user } };
   }
-  const users = await dependencies.userRepository.list();
-  const frequencies = await countFirstNames(dependencies.userRepository);
-  return { props: { users, frequencies, user } };
-});
+);
 
 export default Users;

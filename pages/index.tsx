@@ -1,9 +1,13 @@
-import Link from 'next/link';
-import { withSession, getUserOrRedirect } from '../authentication/session';
+import { GetServerSideProps } from 'next';
+import { withSession, getUserOrRedirect, ContextWithSession } from '../interface/session';
 import Layout from '../components/Layout';
-import { useRouter } from 'next/router';
+import { User } from '../domain/users/entities/Users';
 
-const IndexPage = ({ user }) => (
+type Props = {
+  user: User;
+};
+
+const IndexPage = ({ user }: Props) => (
   <Layout title="Home | Next.js + TypeScript Example" user={user}>
     <main className="flex justify-between mt-10 mx-auto  px-4 sm:mt-12 sm:px-6 md:mt-16 lg:mt-20 lg:px-8 xl:mt-28">
       <div className="sm:text-center lg:text-left px-8">
@@ -42,9 +46,11 @@ const IndexPage = ({ user }) => (
   </Layout>
 );
 
-export const getServerSideProps = withSession(async (context) => {
-  const { user, redirect } = getUserOrRedirect(context);
-  return { props: { user } };
-});
+export const getServerSideProps: GetServerSideProps = withSession(
+  async (context: ContextWithSession) => {
+    const { user, redirect } = getUserOrRedirect(context);
+    return { props: { user } };
+  }
+);
 
 export default IndexPage;

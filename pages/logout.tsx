@@ -1,8 +1,13 @@
-import React from 'react';
+import { GetServerSideProps } from 'next';
+import { parseBody } from 'next/dist/next-server/server/api-utils';
+import { withSession, ContextWithSession } from '../interface/session';
 import Layout from '../components/Layout';
-import { withSession } from '../authentication/session';
 
-const Logout = ({ errorMsg }) => {
+type Props = {
+  errorMsg: string;
+};
+
+const Logout = ({ errorMsg }: Props) => {
   return (
     <Layout>
       <p>Logging out...</p>
@@ -10,15 +15,17 @@ const Logout = ({ errorMsg }) => {
   );
 };
 
-export const getServerSideProps = withSession(async (context) => {
-  context.req.session.unset('user');
-  await context.req.session.save();
-  return {
-    redirect: {
-      destination: '/',
-      permanent: false,
-    },
-  };
-});
+export const getServerSideProps: GetServerSideProps = withSession(
+  async (context: ContextWithSession) => {
+    context.req.session.unset('user');
+    await context.req.session.save();
+    return {
+      redirect: {
+        destination: '/',
+        permanent: false,
+      },
+    };
+  }
+);
 
 export default Logout;

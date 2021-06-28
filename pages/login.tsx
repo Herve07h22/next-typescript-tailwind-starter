@@ -1,11 +1,17 @@
-import React, { useState } from 'react';
-import Layout from '../components/Layout';
+import { GetServerSideProps } from 'next';
+import { withSession, ContextWithSession } from '../interface/session';
 import { parseBody } from 'next/dist/next-server/server/api-utils';
+
 import { dependencies } from '../interface/depedencies';
 import { authenticate } from '../domain/users/use-cases/authenticate';
-import { withSession } from '../authentication/session';
 
-const Login = ({ errorMsg }) => {
+import Layout from '../components/Layout';
+
+type Props = {
+  errorMsg: string;
+};
+
+const Login = ({ errorMsg }: Props) => {
   return (
     <Layout>
       <div className="flex flex-col items-center justify-center h-screen select-none">
@@ -70,30 +76,32 @@ const Login = ({ errorMsg }) => {
   );
 };
 
-export const getServerSideProps = withSession(async (context) => {
-  if (context.req.method == 'POST') {
-    const { username, password } = await parseBody(context.req, '1mb');
-    const user = await authenticate({ username, password }, dependencies);
-    if (user) {
-      context.req.session.set('user', user);
-      await context.req.session.save();
-      return {
-        redirect: {
-          destination: '/',
-          permanent: false,
-        },
-      };
-    } else {
-      return {
-        props: {
-          errorMsg: 'Unregistered user',
-        },
-      };
+export const getServerSideProps: GetServerSideProps = withSession(
+  async (context: ContextWithSession) => {
+    if (context.req.method == 'POST') {
+      const { username, password } = await parseBody(context.req, '1mb');
+      const user = await authenticate({ username, password }, dependencies);
+      if (user) {
+        context.req.session.set('user', user);
+        await context.req.session.save();
+        return {
+          redirect: {
+            destination: '/',
+            permanent: false,
+          },
+        };
+      } else {
+        return {
+          props: {
+            errorMsg: 'Unregistered user',
+          },
+        };
+      }
     }
+    return {
+      props: { errorMsg: '' },
+    };
   }
-  return {
-    props: { errorMsg: '' },
-  };
-});
+);
 
 export default Login;

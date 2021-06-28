@@ -1,7 +1,14 @@
 // this file is a wrapper with defaults to be used in both API routes and `getServerSideProps` functions
-import { withIronSession } from 'next-iron-session';
+import { IncomingMessage } from 'http';
+import { NextApiRequest, NextApiResponse, GetServerSideProps } from 'next';
+import { withIronSession, Session } from 'next-iron-session';
+import { NextApiRequestCookies } from 'next/dist/next-server/server/api-utils';
+type NextIronRequest = IncomingMessage & { cookies: NextApiRequestCookies } & NextApiRequest & {
+    session: Session;
+  };
+export type ContextWithSession = { req: NextIronRequest; res: NextApiResponse };
 
-export function withSession(handler) {
+export function withSession(handler: any): GetServerSideProps {
   return withIronSession(handler, {
     password: process.env.SECRET_COOKIE_PASSWORD || 'Private_key_used_to_encrypt_the_cookie',
     cookieName: 'iron-session',
@@ -13,7 +20,7 @@ export function withSession(handler) {
   });
 }
 
-export function getUserOrRedirect(context): {
+export function getUserOrRedirect(context: ContextWithSession): {
   user?: any;
   redirect?: { destination: string; permanent: boolean };
 } {
